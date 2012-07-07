@@ -1,14 +1,17 @@
 package pat.game.MS;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.*;
 
 public class Game {
-
-	private boolean lose;
+	private ImageButton faceBu;
+	private boolean gameEnd;
+	private int remaining, flagCount;
 
 	private static final int buWidth = 20, buHeight = 20;
 
@@ -16,16 +19,26 @@ public class Game {
 	private int numOfBomb, gameWidth, gameHeight;
 
 	public Game(int x, int y, int numOfBomb, JFrame frame) {
-		frame.setSize(x * buWidth + 5, y * buHeight + 50);
+		frame.setSize(x * buWidth + 5, y * buHeight + 80);
 		frame.setLayout(null);
-		frame.setBackground(Color.red);
 		fieldGrid = new Field[x][y];
+		this.gameWidth = x;
+		this.gameHeight = y;
+		this.remaining = x * y;
+		this.flagCount = 0;
 
-		for (int j = 0; j < y; j++) {
+		faceBu = new ImageButton();
+		faceBu.setMargin(new Insets(0, 0, 0, 0));
+		faceBu.setBounds(buWidth * gameWidth / 2 - 10, 5, buWidth, buHeight);
+		faceBu.setImg(ImageButton.HAHA_IMAGE);
+		faceBuAction(faceBu);
+		frame.add(faceBu);
+
+		for (int j = 0; j < y; j++) { // add buttons
 			for (int i = 0; i < x; i++) {
 				JToggleButton bu = new ImageButton();
 				bu.setMargin(new Insets(0, 0, 0, 0));
-				bu.setBounds(i * buWidth, j * buHeight, buWidth, buHeight);
+				bu.setBounds(i * buWidth, j * buHeight + 30, buWidth, buHeight);
 				bu.setFocusable(false);
 				fieldGrid[i][j] = new Field(bu, i, j);
 				setMouseAction(fieldGrid[i][j]);
@@ -37,7 +50,48 @@ public class Game {
 		this.gameWidth = x;
 		this.gameHeight = y;
 		placeBomb();
-		lose = false;
+		gameEnd = false;
+
+	}
+
+	private void faceBuAction(final ImageButton faceBu) {
+
+		faceBu.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				retry();
+
+			}
+		});
+
+		faceBu.addMouseListener(new MouseListener() {
+
+			public void mouseReleased(MouseEvent arg0) {
+				faceBu.setImg(ImageButton.HAHA_IMAGE);
+				faceBu.repaint();
+
+			}
+
+			public void mousePressed(MouseEvent arg0) {
+				faceBu.setImg(ImageButton.OOO_IMAGE);
+				faceBu.repaint();
+			}
+
+			public void mouseExited(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+			public void mouseEntered(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+			public void mouseClicked(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+
+			}
+		});
 
 	}
 
@@ -47,37 +101,17 @@ public class Game {
 		bu.addMouseListener(new MouseListener() {
 
 			public void mouseReleased(MouseEvent arg0) {
-				arg0.consume();
-			}
-
-			public void mousePressed(MouseEvent arg0) {
-				if (lose) {
+				
+				if (gameEnd) {
 					arg0.consume();
 				} else {
-					if (arg0.getButton() != MouseEvent.BUTTON3)
-						mouseClicked(arg0);
-				}
-			}
-
-			public void mouseExited(MouseEvent arg0) {
-			}
-
-			public void mouseEntered(MouseEvent arg0) {
-			}
-
-			public void mouseClicked(MouseEvent arg0) {
-				if (lose) {
-					arg0.consume();
-				} else {
-
+					faceBu.doMouseEvent(arg0);
 					if (arg0.getButton() == MouseEvent.BUTTON1) { // if left
 																	// click
 
-						if (!field.isFlaged()) { // consume action if field is
-													// flaged
+						if (!field.isFlaged() && !field.isOpened()) { // consume action if field is flaged
 							click(field, arg0);
-						} else
-							field.getBu().setSelected(false);
+						}
 
 					} else if (arg0.getButton() == MouseEvent.BUTTON3) { // right
 																			// click
@@ -86,15 +120,44 @@ public class Game {
 							if (field.isFlaged()) {
 								field.setFlaged(false);
 								bu.setImg(null);
+								--flagCount;
+								System.out.println("flag: "+flagCount);
 							} else {
 								field.setFlaged(true);
 								bu.setImg(ImageButton.FLAG_IMAGE);
+								++flagCount;
+								System.out.println("flag: "+flagCount);
 							}
 						}
 						bu.repaint();
 
 					}
 				}
+			}
+
+			public void mousePressed(MouseEvent arg0) {
+				if (gameEnd || field.isOpened()) {
+					arg0.consume();
+					field.getBu().setSelected(false);
+					
+				} else {
+					System.out.println("2");
+					if (arg0.getButton() != MouseEvent.BUTTON3)
+						mouseClicked(arg0);
+					faceBu.doMouseEvent(arg0);
+				}
+			}
+
+			public void mouseExited(MouseEvent arg0) {
+				arg0.consume();
+			}
+
+			public void mouseEntered(MouseEvent arg0) {
+				arg0.consume();
+			}
+
+			public void mouseClicked(MouseEvent arg0) {
+				arg0.consume();
 			}
 		});
 	}
@@ -138,23 +201,36 @@ public class Game {
 		bu.setSelected(true);
 
 		if (fieldGrid[buX][buY].isBomb()) {
+
+			faceBu.setImg(ImageButton.DEAD_IMAGE);
+
 			bu.setBackground(Color.RED);
 			bu.setImg(ImageButton.MINE_IMAGE);
-			
+
 			for (Field[] fieldArray : fieldGrid) {
 				for (Field fieldA : fieldArray) {
 					ImageButton ibu = (ImageButton) fieldA.getBu();
-					if (fieldA.isBomb() && !fieldA.isFlaged())
-					{
+					if (fieldA.isBomb() && !fieldA.isFlaged()) {
 						ibu.setSelected(true);
 						ibu.setImg(ImageButton.MINE_IMAGE);
 					}
 				}
 			}
-			
-			this.lose = true;
-			
+
+			this.gameEnd = true;
+
 			return 0;
+		}
+
+		--remaining;
+		System.out.println("remaining: "+remaining);
+
+		if (remaining - flagCount == 0) {
+			System.out.println("win");
+			faceBu.setImg(ImageButton.WIN_IMAGE);
+			faceBu.repaint();
+			this.gameEnd = true;
+			
 		}
 
 		fieldGrid[buX][buY].getBu().setFont(new Font("Ariel", 1, 12));
@@ -199,7 +275,7 @@ public class Game {
 
 	public void retry() {
 
-		this.lose = false;
+		this.gameEnd = false;
 
 		for (Field[] fieldArray : fieldGrid) {
 
@@ -214,6 +290,8 @@ public class Game {
 				bu.setSelected(false);
 				bu.setText("");
 				bu.setBackground(null);
+				flagCount=0;
+				remaining=gameHeight*gameWidth;
 			}
 		}
 		placeBomb();

@@ -18,6 +18,10 @@ public class ImageButton extends JToggleButton {
 
 	public static final String MINE_IMAGE = "src/main/java/img/mine.png";
 	public static final String FLAG_IMAGE = "src/main/java/img/flag.png";
+	public static final String OOO_IMAGE = "src/main/java/img/ooo.png";
+	public static final String WIN_IMAGE = "src/main/java/img/win.png";
+	public static final String HAHA_IMAGE = "src/main/java/img/haha.png";
+	public static final String DEAD_IMAGE = "src/main/java/img/dead.png";
 
 	private String img;
 
