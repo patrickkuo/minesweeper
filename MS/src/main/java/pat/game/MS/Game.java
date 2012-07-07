@@ -99,21 +99,22 @@ public class Game {
 		JToggleButton bu = field.getBu();
 
 		bu.addMouseListener(new MouseListener() {
-
+			boolean cancel;
+			
 			public void mouseReleased(MouseEvent arg0) {
 				
 				if (gameEnd) {
 					arg0.consume();
-				} else {
+				} else{
 					faceBu.doMouseEvent(arg0);
-					if (arg0.getButton() == MouseEvent.BUTTON1) { // if left
+					if (arg0.getButton() == MouseEvent.BUTTON1 && !cancel) { // if left
 																	// click
 
 						if (!field.isFlaged() && !field.isOpened()) { // consume action if field is flaged
 							click(field, arg0);
 						}
 
-					} else if (arg0.getButton() == MouseEvent.BUTTON3) { // right
+					} else if (arg0.getButton() == MouseEvent.BUTTON3 && !cancel) { // right
 																			// click
 						ImageButton bu = (ImageButton) field.getBu();
 						if (!field.isOpened()) {
@@ -136,6 +137,7 @@ public class Game {
 			}
 
 			public void mousePressed(MouseEvent arg0) {
+				cancel = false;
 				if (gameEnd || field.isOpened()) {
 					arg0.consume();
 					field.getBu().setSelected(false);
@@ -149,6 +151,7 @@ public class Game {
 			}
 
 			public void mouseExited(MouseEvent arg0) {
+				cancel = true;
 				arg0.consume();
 			}
 
