@@ -1,6 +1,4 @@
-package com.fdm.MS;
-
-import java.awt.Button;
+package pat.game.MS;
 
 import javax.swing.JButton;
 import javax.swing.JToggleButton;
@@ -10,6 +8,33 @@ public class Field {
 	private boolean isBomb;
 	private int bombValue;
 	private JToggleButton bu;
+	private int x, y;
+	private boolean flaged;
+	
+	public boolean isFlaged() {
+		return flaged;
+	}
+
+	public void setFlaged(boolean flaged) {
+		this.flaged = flaged;
+		System.out.println(flaged);
+	}
+
+	public Field(JToggleButton bu, int x, int y) {
+		super();
+		this.bu = bu;
+		this.x = x;
+		this.y = y;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
 	private boolean opened;
 
 	public boolean isOpened() {
@@ -24,9 +49,6 @@ public class Field {
 		return bu;
 	}
 
-	public void setBu(JToggleButton bu2) {
-		this.bu = bu2;
-	}
 
 	public void setBomb(boolean isBomb) {
 		this.isBomb = isBomb;

@@ -1,4 +1,4 @@
-package com.fdm.MS;
+package pat.game.MS;
 
 /**
  * Hello world!
