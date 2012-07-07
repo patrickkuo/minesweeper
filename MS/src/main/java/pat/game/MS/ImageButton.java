@@ -41,7 +41,7 @@ public class ImageButton extends JToggleButton {
 		if (img != null) {
 			try {
 				BufferedImage image = ImageIO.read(new File(img));
-				g.drawImage(image, 3, 3, 15, 15, null);
+				g.drawImage(image, 2, 2, null);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -1,11 +1,13 @@
 package pat.game.MS;
 
 import java.awt.event.*;
+
 import javax.swing.*;
 
 public class MSGUI {
 
 	public MSGUI() {
+		
 		JFrame frame = new JFrame();
 		frame.addWindowListener(new WindowAdapter() {
 
@@ -14,15 +16,26 @@ public class MSGUI {
 				System.exit(0);
 			}
 		});
+		
+		final Game game = new Game(20, 20, 20, frame);;
+		
 		JMenuBar mb = new JMenuBar();
 		JMenu menu = new JMenu("Options");
-		JMenuItem mi = new JMenuItem("New Game");
-		menu.add(mi);
-		mb.add(menu);
-		frame.setJMenuBar(mb);		
+		JMenuItem newGameMI = new JMenuItem("New Game");
+		JMenuItem retryMI = new JMenuItem("Retry");
 		
-		new Game(20, 20, 20, frame);
-
+		retryMI.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent arg0) {
+				game.retry();
+			}
+		});
+		
+		menu.add(newGameMI);
+		menu.add(retryMI);
+		mb.add(menu);
+		frame.setJMenuBar(mb);
+		
 		frame.setVisible(true);
 		frame.setResizable(false);
 

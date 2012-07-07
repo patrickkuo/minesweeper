@@ -51,8 +51,12 @@ public class Game {
 			}
 
 			public void mousePressed(MouseEvent arg0) {
-				if (arg0.getButton() != MouseEvent.BUTTON3)
-					mouseClicked(arg0);
+				if (lose) {
+					arg0.consume();
+				} else {
+					if (arg0.getButton() != MouseEvent.BUTTON3)
+						mouseClicked(arg0);
+				}
 			}
 
 			public void mouseExited(MouseEvent arg0) {
@@ -62,15 +66,17 @@ public class Game {
 			}
 
 			public void mouseClicked(MouseEvent arg0) {
-				if (!lose) {
-					
+				if (lose) {
+					arg0.consume();
+				} else {
+
 					if (arg0.getButton() == MouseEvent.BUTTON1) { // if left
 																	// click
 
 						if (!field.isFlaged()) { // consume action if field is
 													// flaged
 							click(field, arg0);
-						}else
+						} else
 							field.getBu().setSelected(false);
 
 					} else if (arg0.getButton() == MouseEvent.BUTTON3) { // right
@@ -134,7 +140,20 @@ public class Game {
 		if (fieldGrid[buX][buY].isBomb()) {
 			bu.setBackground(Color.RED);
 			bu.setImg(ImageButton.MINE_IMAGE);
+			
+			for (Field[] fieldArray : fieldGrid) {
+				for (Field fieldA : fieldArray) {
+					ImageButton ibu = (ImageButton) fieldA.getBu();
+					if (fieldA.isBomb() && !fieldA.isFlaged())
+					{
+						ibu.setSelected(true);
+						ibu.setImg(ImageButton.MINE_IMAGE);
+					}
+				}
+			}
+			
 			this.lose = true;
+			
 			return 0;
 		}
 
@@ -176,6 +195,28 @@ public class Game {
 		}
 
 		return 0;
+	}
+
+	public void retry() {
+
+		this.lose = false;
+
+		for (Field[] fieldArray : fieldGrid) {
+
+			for (Field field : fieldArray) {
+
+				field.setBomb(false);
+				field.setFlaged(false);
+				field.setOpened(false);
+				field.setBombValue(0);
+				ImageButton bu = (ImageButton) field.getBu();
+				bu.setImg(null);
+				bu.setSelected(false);
+				bu.setText("");
+				bu.setBackground(null);
+			}
+		}
+		placeBomb();
 	}
 
 }
