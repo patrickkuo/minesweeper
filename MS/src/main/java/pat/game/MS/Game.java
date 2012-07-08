@@ -12,27 +12,43 @@ public class Game {
 	private ImageButton faceBu;
 	private boolean gameEnd;
 	private int remaining, flagCount;
+	private JTextField flagTextField;
+	private static final Color[] numColor = new Color[] { Color.LIGHT_GRAY,
+			Color.BLUE, new Color(0, 128, 0), Color.RED,
+			new Color(128, 0, 128), Color.BLACK, new Color(195, 33, 72),
+			new Color(64, 224, 208), Color.GRAY };
 
 	private static final int buWidth = 20, buHeight = 20;
 
 	private Field[][] fieldGrid;
 	private int numOfBomb, gameWidth, gameHeight;
 
-	public Game(int x, int y, int numOfBomb, JFrame frame) {
-		frame.setSize(x * buWidth + 5, y * buHeight + 80);
-		frame.setLayout(null);
+	public Game(int x, int y, int numOfBomb, JPanel panel) {
+		panel.setSize(x * buWidth + 5, y * buHeight + 80);
+		panel.setLayout(null);
 		fieldGrid = new Field[x][y];
 		this.gameWidth = x;
 		this.gameHeight = y;
 		this.remaining = x * y;
 		this.flagCount = 0;
+		this.numOfBomb = numOfBomb;
+
+		flagTextField = new JTextField();
+		flagTextField.setBounds(20, 5, buWidth * 3, buHeight);
+		flagTextField.setDisabledTextColor(Color.RED);
+		flagTextField.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
+		flagTextField.setEnabled(false);
+		flagTextField.setHorizontalAlignment(JTextField.RIGHT);
+		flagTextField.setText(Integer.toString(numOfBomb - flagCount));
+
+		panel.add(flagTextField);
 
 		faceBu = new ImageButton();
 		faceBu.setMargin(new Insets(0, 0, 0, 0));
 		faceBu.setBounds(buWidth * gameWidth / 2 - 10, 5, buWidth, buHeight);
 		faceBu.setImg(ImageButton.HAHA_IMAGE);
 		faceBuAction(faceBu);
-		frame.add(faceBu);
+		panel.add(faceBu);
 
 		for (int j = 0; j < y; j++) { // add buttons
 			for (int i = 0; i < x; i++) {
@@ -42,13 +58,9 @@ public class Game {
 				bu.setFocusable(false);
 				fieldGrid[i][j] = new Field(bu, i, j);
 				setMouseAction(fieldGrid[i][j]);
-				frame.add(bu);
+				panel.add(bu);
 			}
 		}
-
-		this.numOfBomb = numOfBomb;
-		this.gameWidth = x;
-		this.gameHeight = y;
 		placeBomb();
 		gameEnd = false;
 
@@ -100,37 +112,48 @@ public class Game {
 
 		bu.addMouseListener(new MouseListener() {
 			boolean cancel;
-			
+
 			public void mouseReleased(MouseEvent arg0) {
-				
+
 				if (gameEnd) {
 					arg0.consume();
-				} else{
+				} else {
 					faceBu.doMouseEvent(arg0);
-					if (arg0.getButton() == MouseEvent.BUTTON1 && !cancel) { // if left
-																	// click
+					if (arg0.getButton() == MouseEvent.BUTTON1 && !cancel) { // if
+																				// left
+						// click
 
-						if (!field.isFlaged() && !field.isOpened()) { // consume action if field is flaged
+						if (!field.isFlaged() && !field.isOpened()) { // consume
+																		// action
+																		// if
+																		// field
+																		// is
+																		// flaged
 							click(field, arg0);
 						}
 
-					} else if (arg0.getButton() == MouseEvent.BUTTON3 && !cancel) { // right
-																			// click
+					} else if (arg0.getButton() == MouseEvent.BUTTON3
+							&& !cancel) { // right
+						// click
 						ImageButton bu = (ImageButton) field.getBu();
 						if (!field.isOpened()) {
 							if (field.isFlaged()) {
 								field.setFlaged(false);
 								bu.setImg(null);
 								--flagCount;
-								System.out.println("flag: "+flagCount);
+								flagTextField.setText(Integer
+										.toString(numOfBomb - flagCount));
 							} else {
 								field.setFlaged(true);
 								bu.setImg(ImageButton.FLAG_IMAGE);
 								++flagCount;
-								System.out.println("flag: "+flagCount);
+								flagTextField.setText(Integer
+										.toString(numOfBomb - flagCount));
+								checkWin();
 							}
-						}
-						bu.repaint();
+							bu.repaint();
+						} else
+							bu.setSelected(true);
 
 					}
 				}
@@ -141,7 +164,7 @@ public class Game {
 				if (gameEnd || field.isOpened()) {
 					arg0.consume();
 					field.getBu().setSelected(false);
-					
+
 				} else {
 					System.out.println("2");
 					if (arg0.getButton() != MouseEvent.BUTTON3)
@@ -207,9 +230,6 @@ public class Game {
 
 			faceBu.setImg(ImageButton.DEAD_IMAGE);
 
-			bu.setBackground(Color.RED);
-			bu.setImg(ImageButton.MINE_IMAGE);
-
 			for (Field[] fieldArray : fieldGrid) {
 				for (Field fieldA : fieldArray) {
 					ImageButton ibu = (ImageButton) fieldA.getBu();
@@ -220,35 +240,31 @@ public class Game {
 				}
 			}
 
+			bu.setImg(ImageButton.MINE_IMAGE);
+			bu.setBackground(Color.RED);
+			bu.setSelected(false);
+
 			this.gameEnd = true;
 
 			return 0;
 		}
 
 		--remaining;
-		System.out.println("remaining: "+remaining);
+		System.out.println("remaining: " + remaining);
 
-		if (remaining - flagCount == 0) {
-			System.out.println("win");
-			faceBu.setImg(ImageButton.WIN_IMAGE);
-			faceBu.repaint();
-			this.gameEnd = true;
-			
+		checkWin();
+
+		JToggleButton targetBu = fieldGrid[buX][buY].getBu();
+
+		targetBu.setFont(new Font("Ariel", 1, 15));
+
+		targetBu.setForeground(numColor[fieldGrid[buX][buY].getBombValue()]);
+
+		if (fieldGrid[buX][buY].getBombValue() > 0) {
+
+			targetBu.setText(Integer.toString(fieldGrid[buX][buY]
+					.getBombValue()));
 		}
-
-		fieldGrid[buX][buY].getBu().setFont(new Font("Ariel", 1, 12));
-
-		Color[] numColor = new Color[] { Color.LIGHT_GRAY, Color.BLUE,
-				Color.GRAY, Color.GREEN, Color.YELLOW, Color.ORANGE,
-				Color.PINK, Color.MAGENTA, Color.RED };
-
-		fieldGrid[buX][buY].getBu().setForeground(
-				numColor[fieldGrid[buX][buY].getBombValue()]);
-
-		fieldGrid[buX][buY].getBu().setText(
-				Integer.toString(fieldGrid[buX][buY].getBombValue()));
-
-		// mGrid[buX][buY].getBu().setSelected(true);
 
 		fieldGrid[buX][buY].setOpened(true);
 
@@ -276,6 +292,18 @@ public class Game {
 		return 0;
 	}
 
+	private void checkWin() {
+
+		if (remaining - flagCount == 0) {
+			System.out.println("win");
+			faceBu.setImg(ImageButton.WIN_IMAGE);
+			faceBu.repaint();
+			this.gameEnd = true;
+
+		}
+
+	}
+
 	public void retry() {
 
 		this.gameEnd = false;
@@ -293,8 +321,9 @@ public class Game {
 				bu.setSelected(false);
 				bu.setText("");
 				bu.setBackground(null);
-				flagCount=0;
-				remaining=gameHeight*gameWidth;
+				flagCount = 0;
+				flagTextField.setText(Integer.toString(numOfBomb - flagCount));
+				remaining = gameHeight * gameWidth;
 			}
 		}
 		placeBomb();

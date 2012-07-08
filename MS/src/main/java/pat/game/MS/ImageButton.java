@@ -55,7 +55,6 @@ public class ImageButton extends JToggleButton {
 	}
 	
 	public void doMouseEvent(MouseEvent e){
-		requestFocus();
 		processMouseEvent(e);
 		
 	}
