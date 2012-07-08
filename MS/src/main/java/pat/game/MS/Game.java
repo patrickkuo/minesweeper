@@ -166,7 +166,6 @@ public class Game {
 					field.getBu().setSelected(false);
 
 				} else {
-					System.out.println("2");
 					if (arg0.getButton() != MouseEvent.BUTTON3)
 						mouseClicked(arg0);
 					faceBu.doMouseEvent(arg0);
@@ -215,7 +214,7 @@ public class Game {
 					}
 				}
 			}
-			System.out.println("bomb placed at " + bombX + "," + bombY);
+			//System.out.println("bomb placed at " + bombX + "," + bombY);
 
 		}
 	}
@@ -250,7 +249,7 @@ public class Game {
 		}
 
 		--remaining;
-		System.out.println("remaining: " + remaining);
+		//System.out.println("remaining: " + remaining);
 
 		checkWin();
 
@@ -295,7 +294,7 @@ public class Game {
 	private void checkWin() {
 
 		if (remaining - flagCount == 0) {
-			System.out.println("win");
+			//System.out.println("win");
 			faceBu.setImg(ImageButton.WIN_IMAGE);
 			faceBu.repaint();
 			this.gameEnd = true;

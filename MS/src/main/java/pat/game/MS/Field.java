@@ -1,6 +1,5 @@
 package pat.game.MS;
 
-import javax.swing.JButton;
 import javax.swing.JToggleButton;
 
 public class Field {
@@ -17,7 +16,6 @@ public class Field {
 
 	public void setFlaged(boolean flaged) {
 		this.flaged = flaged;
-		System.out.println(flaged);
 	}
 
 	public Field(JToggleButton bu, int x, int y) {
