@@ -40,7 +40,6 @@ public class Game {
 		flagTextField.setEnabled(false);
 		flagTextField.setHorizontalAlignment(JTextField.RIGHT);
 		flagTextField.setText(Integer.toString(numOfBomb - flagCount));
-		
 
 		panel.add(flagTextField);
 
@@ -113,25 +112,25 @@ public class Game {
 
 		bu.addMouseListener(new MouseListener() {
 			boolean cancel;
-			boolean leftClicked,rightClicked;
+			boolean leftClicked, rightClicked;
 
 			public void mouseReleased(MouseEvent arg0) {
 
-				if (arg0.getButton()==MouseEvent.BUTTON1)
-					leftClicked=false;
-				if (arg0.getButton()==MouseEvent.BUTTON3)
-					rightClicked=false;
-				
+				if (arg0.getButton() == MouseEvent.BUTTON1)
+					leftClicked = false;
+				if (arg0.getButton() == MouseEvent.BUTTON3)
+					rightClicked = false;
+
 				if (gameEnd) {
 					arg0.consume();
 					return;
-				} else{
+				} else {
 					faceBu.doMouseEvent(arg0);
 					if (arg0.getButton() == MouseEvent.BUTTON1 && !cancel) {
 						// if left click
 						if (!field.isFlaged() && !field.isOpened()) {
 							click(field, arg0);
-						}else if (field.isFlaged()){
+						} else if (field.isFlaged()) {
 							field.getBu().setSelected(false);
 						}
 
@@ -154,24 +153,28 @@ public class Game {
 										.toString(numOfBomb - flagCount));
 								checkWin();
 							}
+
 							bu.repaint();
+						} else if (leftClicked) {
+							System.out.println("called");
+							bu.setSelected(!bu.isSelected()&&cancel);
 						} else
 							bu.setSelected(true);
 
 					}
-					if(cancel){
+					if (cancel) {
 						field.getBu().setSelected(field.isOpened());
 					}
 				}
 			}
 
 			public void mousePressed(MouseEvent arg0) {
-				
-				if (arg0.getButton()==MouseEvent.BUTTON1)
-					leftClicked=true;
-				if (arg0.getButton()==MouseEvent.BUTTON3)
-					rightClicked=true;
-				
+
+				if (arg0.getButton() == MouseEvent.BUTTON1)
+					leftClicked = true;
+				if (arg0.getButton() == MouseEvent.BUTTON3)
+					rightClicked = true;
+
 				cancel = false;
 				if (gameEnd || field.isOpened()) {
 					arg0.consume();
@@ -186,8 +189,8 @@ public class Game {
 
 			public void mouseExited(MouseEvent arg0) {
 				cancel = true;
-				if (leftClicked||rightClicked)
-				field.getBu().setSelected(field.getBu().isSelected());
+				if (leftClicked || rightClicked)
+					field.getBu().setSelected(field.getBu().isSelected());
 				arg0.consume();
 			}
 
@@ -246,11 +249,12 @@ public class Game {
 			for (Field[] fieldArray : fieldGrid) {
 				for (Field fieldA : fieldArray) {
 					ImageButton ibu = (ImageButton) fieldA.getBu();
-					if (fieldA.isBomb() ) {
+					if (fieldA.isBomb()) {
 						ibu.setSelected(true);
-						if(fieldA.isFlaged()){
-							ibu.setImg(ImageButton.FLAG_IMAGE,ImageButton.MINE_IMAGE);
-						}else
+						if (fieldA.isFlaged()) {
+							ibu.setImg(ImageButton.FLAG_IMAGE,
+									ImageButton.MINE_IMAGE);
+						} else
 							ibu.setImg(ImageButton.MINE_IMAGE);
 					}
 				}
