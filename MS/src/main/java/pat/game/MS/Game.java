@@ -112,23 +112,22 @@ public class Game {
 
 		bu.addMouseListener(new MouseListener() {
 			boolean cancel;
+			boolean leftClicked,rightClicked;
 
 			public void mouseReleased(MouseEvent arg0) {
 
+				if (arg0.getButton()==MouseEvent.BUTTON1)
+					leftClicked=false;
+				if (arg0.getButton()==MouseEvent.BUTTON3)
+					rightClicked=false;
+				
 				if (gameEnd) {
 					arg0.consume();
 				} else {
 					faceBu.doMouseEvent(arg0);
-					if (arg0.getButton() == MouseEvent.BUTTON1 && !cancel) { // if
-																				// left
-						// click
-
-						if (!field.isFlaged() && !field.isOpened()) { // consume
-																		// action
-																		// if
-																		// field
-																		// is
-																		// flaged
+					if (arg0.getButton() == MouseEvent.BUTTON1 && !cancel) {
+						// if left click
+						if (!field.isFlaged() && !field.isOpened()) {
 							click(field, arg0);
 						}
 
@@ -160,10 +159,16 @@ public class Game {
 			}
 
 			public void mousePressed(MouseEvent arg0) {
+				
+				if (arg0.getButton()==MouseEvent.BUTTON1)
+					leftClicked=true;
+				if (arg0.getButton()==MouseEvent.BUTTON3)
+					rightClicked=true;
+				
 				cancel = false;
 				if (gameEnd || field.isOpened()) {
 					arg0.consume();
-					field.getBu().setSelected(false);
+					field.getBu().setSelected(!field.getBu().isSelected());
 
 				} else {
 					if (arg0.getButton() != MouseEvent.BUTTON3)
@@ -174,6 +179,8 @@ public class Game {
 
 			public void mouseExited(MouseEvent arg0) {
 				cancel = true;
+				if (leftClicked||rightClicked)
+				field.getBu().setSelected(field.getBu().isSelected());
 				arg0.consume();
 			}
 
@@ -214,7 +221,7 @@ public class Game {
 					}
 				}
 			}
-			//System.out.println("bomb placed at " + bombX + "," + bombY);
+			// System.out.println("bomb placed at " + bombX + "," + bombY);
 
 		}
 	}
@@ -249,7 +256,7 @@ public class Game {
 		}
 
 		--remaining;
-		//System.out.println("remaining: " + remaining);
+		// System.out.println("remaining: " + remaining);
 
 		checkWin();
 
@@ -294,7 +301,7 @@ public class Game {
 	private void checkWin() {
 
 		if (remaining - flagCount == 0) {
-			//System.out.println("win");
+			// System.out.println("win");
 			faceBu.setImg(ImageButton.WIN_IMAGE);
 			faceBu.repaint();
 			this.gameEnd = true;
