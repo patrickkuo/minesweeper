@@ -40,6 +40,7 @@ public class Game {
 		flagTextField.setEnabled(false);
 		flagTextField.setHorizontalAlignment(JTextField.RIGHT);
 		flagTextField.setText(Integer.toString(numOfBomb - flagCount));
+		
 
 		panel.add(flagTextField);
 
@@ -123,12 +124,15 @@ public class Game {
 				
 				if (gameEnd) {
 					arg0.consume();
-				} else {
+					return;
+				} else{
 					faceBu.doMouseEvent(arg0);
 					if (arg0.getButton() == MouseEvent.BUTTON1 && !cancel) {
 						// if left click
 						if (!field.isFlaged() && !field.isOpened()) {
 							click(field, arg0);
+						}else if (field.isFlaged()){
+							field.getBu().setSelected(false);
 						}
 
 					} else if (arg0.getButton() == MouseEvent.BUTTON3
@@ -154,6 +158,9 @@ public class Game {
 						} else
 							bu.setSelected(true);
 
+					}
+					if(cancel){
+						field.getBu().setSelected(field.isOpened());
 					}
 				}
 			}
@@ -239,9 +246,12 @@ public class Game {
 			for (Field[] fieldArray : fieldGrid) {
 				for (Field fieldA : fieldArray) {
 					ImageButton ibu = (ImageButton) fieldA.getBu();
-					if (fieldA.isBomb() && !fieldA.isFlaged()) {
+					if (fieldA.isBomb() ) {
 						ibu.setSelected(true);
-						ibu.setImg(ImageButton.MINE_IMAGE);
+						if(fieldA.isFlaged()){
+							ibu.setImg(ImageButton.FLAG_IMAGE,ImageButton.MINE_IMAGE);
+						}else
+							ibu.setImg(ImageButton.MINE_IMAGE);
 					}
 				}
 			}

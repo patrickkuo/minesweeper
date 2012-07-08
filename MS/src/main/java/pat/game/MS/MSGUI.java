@@ -1,7 +1,12 @@
 package pat.game.MS;
 
+import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class MSGUI {
@@ -30,16 +35,25 @@ public class MSGUI {
 				game.retry();
 			}
 		});
-
-		/* dialog input */
-		final JTextField tFRows = new JTextField();
-		final JTextField tFColumns = new JTextField();
-		final JTextField tFMines = new JTextField();
 		panel = new JPanel();
 
-		final JComponent[] inputs = new JComponent[] { new JLabel("Columns"),
-				tFColumns, new JLabel("Rows"), tFRows, new JLabel("Mines"),
-				tFMines };
+		/* dialog input */
+
+		final JSpinner spinnerY = new JSpinner(new SpinnerNumberModel(20, 10,
+				100, 1));
+		final JSpinner spinnerX = new JSpinner(new SpinnerNumberModel(30, 10,
+				100, 1));
+		final JSpinner spinnerMines = new JSpinner(new SpinnerNumberModel(50,
+				1, 999, 1));
+
+		final JPanel inputs = new JPanel();
+
+		inputs.add(new JLabel("Columns: "));
+		inputs.add(spinnerX);
+		inputs.add(new JLabel("Rows: "));
+		inputs.add(spinnerY);
+		inputs.add(new JLabel("Mines: "));
+		inputs.add(spinnerMines);
 
 		newGameMI.addActionListener(new ActionListener() {
 
@@ -47,9 +61,9 @@ public class MSGUI {
 				JOptionPane.showMessageDialog(null, inputs, "New Game",
 						JOptionPane.PLAIN_MESSAGE);
 
-				newGame(Integer.parseInt(tFColumns.getText()),
-						Integer.parseInt(tFRows.getText()),
-						Integer.parseInt(tFMines.getText()));
+				newGame((Integer) (spinnerX.getValue()),
+						(Integer) (spinnerY.getValue()),
+						(Integer) (spinnerMines.getValue()));
 
 			}
 		});
@@ -58,7 +72,28 @@ public class MSGUI {
 		menu.add(retryMI);
 		mb.add(menu);
 		frame.setJMenuBar(mb);
-		newGame(30, 20, 20);
+		newGame(30, 20, 50);
+
+		// Get the size of the screen
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+
+		// Determine the new location of the window
+		int w = frame.getSize().width;
+		int h = frame.getSize().height;
+		int x = (dim.width - w) / 2;
+		int y = (dim.height - h) / 2;
+
+		// Move the window
+		frame.setLocation(x, y);
+		BufferedImage image;
+
+		try {
+			image = ImageIO.read(new File(ImageButton.MINE_IMAGE));
+			frame.setIconImage(image);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		frame.setVisible(true);
 		frame.setResizable(false);

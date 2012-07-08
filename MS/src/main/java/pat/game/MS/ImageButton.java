@@ -24,9 +24,16 @@ public class ImageButton extends JToggleButton {
 	public static final String DEAD_IMAGE = "src/main/java/img/dead.png";
 
 	private String img;
+	private String img1;
 
 	public ImageButton(String img) {
 		this.img = img;
+		this.img1 = null;
+	}
+
+	public ImageButton(String img, String img1) {
+		this.img = img;
+		this.img1 = img1;
 	}
 
 	public ImageButton() {
@@ -35,6 +42,12 @@ public class ImageButton extends JToggleButton {
 
 	public void setImg(String img) {
 		this.img = img;
+		this.img1 = null;
+	}
+
+	public void setImg(String img, String img1) {
+		this.img = img;
+		this.img1 = img1;
 	}
 
 	@Override
@@ -44,8 +57,15 @@ public class ImageButton extends JToggleButton {
 
 		if (img != null) {
 			try {
+
+				if (img1 != null) {
+					BufferedImage image1 = ImageIO.read(new File(img1));
+					g.drawImage(image1, 2, 2, null);
+				}
+
 				BufferedImage image = ImageIO.read(new File(img));
 				g.drawImage(image, 2, 2, null);
+
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -53,9 +73,9 @@ public class ImageButton extends JToggleButton {
 		}
 
 	}
-	
-	public void doMouseEvent(MouseEvent e){
+
+	public void doMouseEvent(MouseEvent e) {
 		processMouseEvent(e);
-		
+
 	}
 }
