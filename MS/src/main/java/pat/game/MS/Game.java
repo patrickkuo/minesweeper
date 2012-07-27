@@ -13,6 +13,9 @@ public class Game {
 	private boolean gameEnd;
 	private int remaining, flagCount;
 	private JTextField flagTextField;
+	
+	private JTextField timeTextField;
+	
 	private static final Color[] numColor = new Color[] { Color.LIGHT_GRAY,
 			Color.BLUE, new Color(0, 128, 0), Color.RED,
 			new Color(128, 0, 128), Color.BLACK, new Color(195, 33, 72),
@@ -49,7 +52,19 @@ public class Game {
 		faceBu.setImg(ImageButton.HAHA_IMAGE);
 		faceBuAction(faceBu);
 		panel.add(faceBu);
-
+		
+		timeTextField = new JTextField();
+		timeTextField.setBounds(buWidth * (gameWidth - 4) , 5, buWidth * 3, buHeight);
+		timeTextField.setDisabledTextColor(Color.RED);
+		timeTextField.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
+		timeTextField.setEnabled(false);
+		timeTextField.setHorizontalAlignment(JTextField.RIGHT);
+		panel.add(timeTextField);
+		
+		StopWatch sw = new StopWatch(timeTextField);
+		Thread thread = new Thread(sw);
+		thread.start();
+		
 		for (int j = 0; j < y; j++) { // add buttons
 			for (int i = 0; i < x; i++) {
 				JToggleButton bu = new ImageButton();
