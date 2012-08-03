@@ -36,14 +36,20 @@ public class StopWatch implements Runnable{
 	}
 
 	// elaspsed time in seconds
-	public long getElapsedTimeSecs() {
+	public String getElapsedTimeSecs() {
 		long elapsed;
 		if (running) {
-			elapsed = ((System.currentTimeMillis() - startTime) / 1000);
+			elapsed = ((System.currentTimeMillis() - startTime)/1000);
 		} else {
-			elapsed = ((stopTime - startTime) / 1000);
+			elapsed = ((stopTime - startTime)/1000);
 		}
-		return elapsed;
+		String min= "0";
+		String second = (elapsed%60 < 10)?"0"+Integer.toString((int) (elapsed%60)):Integer.toString((int) (elapsed%60));
+		if (elapsed>59){
+			min = Integer.toString((int)((elapsed - elapsed%60)/60));
+		}
+		
+		return min+":"+second;
 	}
 
 	public void run() {
@@ -51,12 +57,11 @@ public class StopWatch implements Runnable{
 		start();
 		while(true){
 			synchronized (timeField) {
-				timeField.setText(Long.toString(getElapsedTimeSecs()));
+				timeField.setText(getElapsedTimeSecs());
 				try {
 					timeField.wait(500);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					return;
 				}
 				
 			}

@@ -13,7 +13,7 @@ public class Game {
 	private boolean gameEnd;
 	private int remaining, flagCount;
 	private JTextField flagTextField;
-	
+	private Thread thread;
 	private JTextField timeTextField;
 	
 	private static final Color[] numColor = new Color[] { Color.LIGHT_GRAY,
@@ -27,7 +27,7 @@ public class Game {
 	private int numOfBomb, gameWidth, gameHeight;
 
 	public Game(int x, int y, int numOfBomb, JPanel panel) {
-		panel.setSize(x * buWidth + 5, y * buHeight + 80);
+		panel.setSize(x * buWidth + 5, y * buHeight + 85);
 		panel.setLayout(null);
 		fieldGrid = new Field[x][y];
 		this.gameWidth = x;
@@ -61,8 +61,7 @@ public class Game {
 		timeTextField.setHorizontalAlignment(JTextField.RIGHT);
 		panel.add(timeTextField);
 		
-		StopWatch sw = new StopWatch(timeTextField);
-		Thread thread = new Thread(sw);
+		thread = new Thread(new StopWatch(timeTextField));
 		thread.start();
 		
 		for (int j = 0; j < y; j++) { // add buttons
@@ -278,7 +277,7 @@ public class Game {
 			bu.setImg(ImageButton.MINE_IMAGE);
 			bu.setBackground(Color.RED);
 			bu.setSelected(false);
-
+			thread.interrupt();
 			this.gameEnd = true;
 
 			return 0;
@@ -334,7 +333,7 @@ public class Game {
 			faceBu.setImg(ImageButton.WIN_IMAGE);
 			faceBu.repaint();
 			this.gameEnd = true;
-
+			thread.interrupt();
 		}
 
 	}
@@ -359,6 +358,9 @@ public class Game {
 				flagCount = 0;
 				flagTextField.setText(Integer.toString(numOfBomb - flagCount));
 				remaining = gameHeight * gameWidth;
+				thread.interrupt();
+				thread = new Thread(new StopWatch(timeTextField));
+				thread.start();
 			}
 		}
 		placeBomb();
