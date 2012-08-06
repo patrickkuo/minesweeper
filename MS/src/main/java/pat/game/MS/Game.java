@@ -333,7 +333,7 @@ public class Game {
 
 	private void checkWin() {
 
-		if (remaining - flagCount == 0) {
+		if (remaining == numOfBomb) {
 			// System.out.println("win");
 			faceBu.setImg(ButtonImage.getImage(ImageEnum.WIN_IMAGE));
 			faceBu.repaint();
