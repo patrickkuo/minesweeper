@@ -290,8 +290,7 @@ public class Game {
 		}
 
 		--remaining;
-		// System.out.println("remaining: " + remaining);
-
+		//System.out.println("remaining: " + remaining);
 		checkWin();
 
 		JToggleButton targetBu = fieldGrid[buX][buY].getBu();
@@ -398,7 +397,7 @@ public class Game {
 						if (x + i > -1 && y + j > -1 && x + i < gameWidth
 								&& y + j < gameHeight) {
 							if (!(j == 0 && i == 0)
-									&& !this.fieldGrid[x + i][y + j].isFlaged()) {
+									&& !this.fieldGrid[x + i][y + j].isFlaged() && !this.fieldGrid[x + i][y + j].isOpened()) {
 								click(this.fieldGrid[x + i][y + j], me);
 							}
 						}
