@@ -15,7 +15,7 @@ public class Game {
 	private JTextField flagTextField;
 	private Thread thread;
 	private JTextField timeTextField;
-	
+
 	private static final Color[] numColor = new Color[] { Color.LIGHT_GRAY,
 			Color.BLUE, new Color(0, 128, 0), Color.RED,
 			new Color(128, 0, 128), Color.BLACK, new Color(195, 33, 72),
@@ -52,18 +52,19 @@ public class Game {
 		faceBu.setImg(ButtonImage.getImage(ImageEnum.HAHA_IMAGE));
 		faceBuAction(faceBu);
 		panel.add(faceBu);
-		
+
 		timeTextField = new JTextField();
-		timeTextField.setBounds(buWidth * (gameWidth - 4) , 5, buWidth * 3, buHeight);
+		timeTextField.setBounds(buWidth * (gameWidth - 4), 5, buWidth * 3,
+				buHeight);
 		timeTextField.setDisabledTextColor(Color.RED);
 		timeTextField.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
 		timeTextField.setEnabled(false);
 		timeTextField.setHorizontalAlignment(JTextField.RIGHT);
 		panel.add(timeTextField);
-		
+
 		thread = new Thread(new StopWatch(timeTextField));
 		thread.start();
-		
+
 		for (int j = 0; j < y; j++) { // add buttons
 			for (int i = 0; i < x; i++) {
 				JToggleButton bu = new ImageButton();
@@ -152,7 +153,7 @@ public class Game {
 							&& !cancel) { // right
 						// click
 						ImageButton bu = (ImageButton) field.getBu();
-						if (!field.isOpened()) {
+						if (!field.isOpened() && !leftClicked) {
 							if (field.isFlaged()) {
 								field.setFlaged(false);
 								bu.setImg(null);
@@ -161,7 +162,8 @@ public class Game {
 										.toString(numOfBomb - flagCount));
 							} else {
 								field.setFlaged(true);
-								bu.setImg(ButtonImage.getImage(ImageEnum.FLAG_IMAGE));
+								bu.setImg(ButtonImage
+										.getImage(ImageEnum.FLAG_IMAGE));
 								++flagCount;
 								flagTextField.setText(Integer
 										.toString(numOfBomb - flagCount));
@@ -170,8 +172,8 @@ public class Game {
 
 							bu.repaint();
 						} else if (leftClicked) {
-							System.out.println("called");
-							bu.setSelected(!bu.isSelected()&&cancel);
+							autoFlagClick(field, arg0);
+							bu.setSelected(!bu.isSelected() && cancel);
 						} else
 							bu.setSelected(true);
 
@@ -266,10 +268,12 @@ public class Game {
 					if (fieldA.isBomb()) {
 						ibu.setSelected(true);
 						if (fieldA.isFlaged()) {
-							ibu.setImg(ButtonImage.getImage(ImageEnum.FLAG_IMAGE),
+							ibu.setImg(
+									ButtonImage.getImage(ImageEnum.FLAG_IMAGE),
 									ButtonImage.getImage(ImageEnum.MINE_IMAGE));
 						} else
-							ibu.setImg(ButtonImage.getImage(ImageEnum.MINE_IMAGE));
+							ibu.setImg(ButtonImage
+									.getImage(ImageEnum.MINE_IMAGE));
 					}
 				}
 			}
@@ -366,4 +370,37 @@ public class Game {
 		placeBomb();
 	}
 
+	private void autoFlagClick(Field field, MouseEvent me) {
+		if (field.isOpened()) {
+			int bombPoint = field.getBombValue();
+			int flagCount = 0;
+			int x = field.getX();
+			int y = field.getY();
+
+			for (int i = -1; i < 2; i++) {
+				for (int j = -1; j < 2; j++) {
+					if (x + i > -1 && y + j > -1) {
+						if (!(j == 0 && i == 0)) {
+							if (this.fieldGrid[x + i][y + j].isFlaged()) {
+								flagCount++;
+							}
+						}
+					}
+				}
+			}
+
+			if (flagCount == bombPoint) {
+				for (int i = -1; i < 2; i++) {
+					for (int j = -1; j < 2; j++) {
+						if (x + i > -1 && y + j > -1) {
+							if (!(j == 0 && i == 0)
+									&& !this.fieldGrid[x + i][y + j].isFlaged()) {
+								click(this.fieldGrid[x + i][y + j], me);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
