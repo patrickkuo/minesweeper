@@ -253,6 +253,7 @@ public class Game {
 	}
 
 	private int click(Field field, MouseEvent me) {
+		System.out.println(flagCount);
 		int buX = field.getX();
 		int buY = field.getY();
 		ImageButton bu = (ImageButton) field.getBu();
@@ -373,7 +374,7 @@ public class Game {
 	private void autoFlagClick(Field field, MouseEvent me) {
 		if (field.isOpened()) {
 			int bombPoint = field.getBombValue();
-			int flagCount = 0;
+			int fCount = 0;
 			int x = field.getX();
 			int y = field.getY();
 
@@ -382,14 +383,14 @@ public class Game {
 					if (x + i > -1 && y + j > -1) {
 						if (!(j == 0 && i == 0)) {
 							if (this.fieldGrid[x + i][y + j].isFlaged()) {
-								flagCount++;
+								fCount++;
 							}
 						}
 					}
 				}
 			}
 
-			if (flagCount == bombPoint) {
+			if (fCount == bombPoint) {
 				for (int i = -1; i < 2; i++) {
 					for (int j = -1; j < 2; j++) {
 						if (x + i > -1 && y + j > -1) {
