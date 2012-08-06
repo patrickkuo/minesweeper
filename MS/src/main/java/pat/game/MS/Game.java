@@ -190,10 +190,10 @@ public class Game {
 					leftClicked = true;
 				if (arg0.getButton() == MouseEvent.BUTTON3)
 					rightClicked = true;
-				
-				if(!(leftClicked&&rightClicked))
-				cancel = false;
-				
+
+				if (!(leftClicked && rightClicked))
+					cancel = false;
+
 				if (gameEnd || field.isOpened()) {
 					arg0.consume();
 					field.getBu().setSelected(!field.getBu().isSelected());
@@ -381,7 +381,8 @@ public class Game {
 
 			for (int i = -1; i < 2; i++) {
 				for (int j = -1; j < 2; j++) {
-					if (x + i > -1 && y + j > -1) {
+					if (x + i > -1 && y + j > -1 && x + i < gameWidth
+							&& y + j < gameHeight) {
 						if (!(j == 0 && i == 0)) {
 							if (this.fieldGrid[x + i][y + j].isFlaged()) {
 								fCount++;
@@ -394,7 +395,8 @@ public class Game {
 			if (fCount == bombPoint) {
 				for (int i = -1; i < 2; i++) {
 					for (int j = -1; j < 2; j++) {
-						if (x + i > -1 && y + j > -1) {
+						if (x + i > -1 && y + j > -1 && x + i < gameWidth
+								&& y + j < gameHeight) {
 							if (!(j == 0 && i == 0)
 									&& !this.fieldGrid[x + i][y + j].isFlaged()) {
 								click(this.fieldGrid[x + i][y + j], me);
