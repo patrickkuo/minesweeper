@@ -190,8 +190,10 @@ public class Game {
 					leftClicked = true;
 				if (arg0.getButton() == MouseEvent.BUTTON3)
 					rightClicked = true;
-
+				
+				if(!(leftClicked&&rightClicked))
 				cancel = false;
+				
 				if (gameEnd || field.isOpened()) {
 					arg0.consume();
 					field.getBu().setSelected(!field.getBu().isSelected());
@@ -253,7 +255,6 @@ public class Game {
 	}
 
 	private int click(Field field, MouseEvent me) {
-		System.out.println(flagCount);
 		int buX = field.getX();
 		int buY = field.getY();
 		ImageButton bu = (ImageButton) field.getBu();
