@@ -49,7 +49,7 @@ public class Game {
 		faceBu = new ImageButton();
 		faceBu.setMargin(new Insets(0, 0, 0, 0));
 		faceBu.setBounds(buWidth * gameWidth / 2 - 10, 5, buWidth, buHeight);
-		faceBu.setImg(ImageButton.HAHA_IMAGE);
+		faceBu.setImg(ButtonImage.getImage(ImageEnum.HAHA_IMAGE));
 		faceBuAction(faceBu);
 		panel.add(faceBu);
 		
@@ -93,13 +93,13 @@ public class Game {
 		faceBu.addMouseListener(new MouseListener() {
 
 			public void mouseReleased(MouseEvent arg0) {
-				faceBu.setImg(ImageButton.HAHA_IMAGE);
+				faceBu.setImg(ButtonImage.getImage(ImageEnum.HAHA_IMAGE));
 				faceBu.repaint();
 
 			}
 
 			public void mousePressed(MouseEvent arg0) {
-				faceBu.setImg(ImageButton.OOO_IMAGE);
+				faceBu.setImg(ButtonImage.getImage(ImageEnum.OOO_IMAGE));
 				faceBu.repaint();
 			}
 
@@ -161,7 +161,7 @@ public class Game {
 										.toString(numOfBomb - flagCount));
 							} else {
 								field.setFlaged(true);
-								bu.setImg(ImageButton.FLAG_IMAGE);
+								bu.setImg(ButtonImage.getImage(ImageEnum.FLAG_IMAGE));
 								++flagCount;
 								flagTextField.setText(Integer
 										.toString(numOfBomb - flagCount));
@@ -258,7 +258,7 @@ public class Game {
 
 		if (fieldGrid[buX][buY].isBomb()) {
 
-			faceBu.setImg(ImageButton.DEAD_IMAGE);
+			faceBu.setImg(ButtonImage.getImage(ImageEnum.DEAD_IMAGE));
 
 			for (Field[] fieldArray : fieldGrid) {
 				for (Field fieldA : fieldArray) {
@@ -266,15 +266,15 @@ public class Game {
 					if (fieldA.isBomb()) {
 						ibu.setSelected(true);
 						if (fieldA.isFlaged()) {
-							ibu.setImg(ImageButton.FLAG_IMAGE,
-									ImageButton.MINE_IMAGE);
+							ibu.setImg(ButtonImage.getImage(ImageEnum.FLAG_IMAGE),
+									ButtonImage.getImage(ImageEnum.MINE_IMAGE));
 						} else
-							ibu.setImg(ImageButton.MINE_IMAGE);
+							ibu.setImg(ButtonImage.getImage(ImageEnum.MINE_IMAGE));
 					}
 				}
 			}
 
-			bu.setImg(ImageButton.MINE_IMAGE);
+			bu.setImg(ButtonImage.getImage(ImageEnum.MINE_IMAGE));
 			bu.setBackground(Color.RED);
 			bu.setSelected(false);
 			thread.interrupt();
@@ -330,7 +330,7 @@ public class Game {
 
 		if (remaining - flagCount == 0) {
 			// System.out.println("win");
-			faceBu.setImg(ImageButton.WIN_IMAGE);
+			faceBu.setImg(ButtonImage.getImage(ImageEnum.WIN_IMAGE));
 			faceBu.repaint();
 			this.gameEnd = true;
 			thread.interrupt();

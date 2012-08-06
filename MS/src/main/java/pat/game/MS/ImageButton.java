@@ -23,15 +23,15 @@ public class ImageButton extends JToggleButton {
 	public static final String HAHA_IMAGE = "src/main/java/img/haha.png";
 	public static final String DEAD_IMAGE = "src/main/java/img/dead.png";
 
-	private String img;
-	private String img1;
+	private BufferedImage img;
+	private BufferedImage img1;
 
-	public ImageButton(String img) {
+	public ImageButton(BufferedImage img) {
 		this.img = img;
 		this.img1 = null;
 	}
 
-	public ImageButton(String img, String img1) {
+	public ImageButton(BufferedImage img, BufferedImage img1) {
 		this.img = img;
 		this.img1 = img1;
 	}
@@ -40,12 +40,12 @@ public class ImageButton extends JToggleButton {
 		this.img = null;
 	}
 
-	public void setImg(String img) {
+	public void setImg(BufferedImage img) {
 		this.img = img;
 		this.img1 = null;
 	}
 
-	public void setImg(String img, String img1) {
+	public void setImg(BufferedImage img, BufferedImage img1) {
 		this.img = img;
 		this.img1 = img1;
 	}
@@ -56,20 +56,14 @@ public class ImageButton extends JToggleButton {
 		super.paint(g);
 
 		if (img != null) {
-			try {
 
 				if (img1 != null) {
-					BufferedImage image1 = ImageIO.read(new File(img1));
-					g.drawImage(image1, 2, 2, null);
+					g.drawImage(img1, 2, 2, null);
 				}
+				
+				//BufferedImage image = ImageIO.read(new File(img));
+				g.drawImage(img, 2, 2, null);
 
-				BufferedImage image = ImageIO.read(new File(img));
-				g.drawImage(image, 2, 2, null);
-
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 
 	}
